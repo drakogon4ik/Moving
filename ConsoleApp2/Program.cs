@@ -59,9 +59,9 @@ namespace ConsoleApp2
                 }
             }
 
-            if (node.GetInfo() > max)
+            if ((node.GetInfo() > max) && (node.GetInfo() != 0))
                 max = node.GetInfo();
-            if (node.GetInfo() < min)
+            if ((node.GetInfo() < min) && (node.GetInfo() != 0))
                 min = node.GetInfo();
 
             resnode = new IntNode(min, resnode);
