@@ -17,14 +17,17 @@ namespace ConsoleApp3
         {
             Queue<int> abc = new Queue<int>();
 
-            abc.Insert(0);
+
             abc.Insert(1);
             abc.Insert(2);
             abc.Insert(3);
             abc.Insert(0);
             abc.Insert(1);
-            abc.Insert(2);
             abc.Insert(3);
+            abc.Insert(3);
+            abc.Insert(3);
+            abc.Insert(3);
+            abc.Insert(2);
             //Queue<int> ab = new Queue<int>(abc);
             //Console.WriteLine(ab);
             Console.WriteLine(abc);
@@ -72,37 +75,49 @@ namespace ConsoleApp3
         }
 
 
-        static public Queue<int> QueCouples(Queue<int> que) //function doesnt work sue to inheritance
+        static public Queue<int> QueCouples(Queue<int> que)
         {
-            bool flag = false;
+            int n;
             int val;
             int val1;
-            Queue<int> test = que;
+            bool flag = true;
+            Queue<int> test = new Queue<int>();
             Queue<int> result = new Queue<int>();
+            Queue<int> bad_result = new Queue<int>();
             while (!que.IsEmpty())
             {
+                n = 0;
                 val = que.Remove();
-
-                test = que.Copy(que);
-                while (!test.IsEmpty())
+                if (!bad_result.IsEmpty())
                 {
-                    val1 = test.Remove();
-                    if ((val1 == val) && (flag))
-                        break;
-                    else if (val1 == val)
-                        flag = true;
+                    Queue<int> temp = bad_result.Copy(bad_result);
+                    while (!temp.IsEmpty())
+                    {
+                        int num = temp.Remove();
+                        if (val == num)
+                            flag = false;
+                    }
                 }
                 if (flag)
                 {
-                    result.Insert(val);
+                    test = que.Copy(que);
+                    while (!test.IsEmpty())
+                    {
+                        val1 = test.Remove();
+                        if (val1 == val)
+                            n++;
+                    }
+                    if (n == 1)
+                        result.Insert(val);
+                    else
+                        bad_result.Insert(val);
                 }
-                flag = false;
             }
             return result;
         }
 
 
-        static public Queue<int> QueCouplesNode(Queue<int> que) //function works
+        static public Queue<int> QueCouplesNode(Queue<int> que) //function works with node
         {
             int val;
             int val1;
@@ -413,7 +428,7 @@ namespace ConsoleApp3
         {
             Queue<T> tempque1 = new Queue<T>();
             Queue<T> tempque2 = new Queue<T>();
-            while(!que.IsEmpty())
+            while (!que.IsEmpty())
             {
                 tempque1.Insert(que.Head());
                 tempque2.Insert(que.Remove());
