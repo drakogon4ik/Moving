@@ -16,7 +16,7 @@ namespace ConsoleApp3
         static void Main(string[] args)
         {
             Queue<int> abc = new Queue<int>();
-            
+
             abc.Insert(0);
             abc.Insert(1);
             abc.Insert(2);
@@ -28,8 +28,8 @@ namespace ConsoleApp3
             //Queue<int> ab = new Queue<int>(abc);
             //Console.WriteLine(ab);
             Console.WriteLine(abc);
-            
-            Console.WriteLine(QueCouplesNode(abc));
+
+            Console.WriteLine(QueCouples(abc));
         }
 
 
@@ -83,7 +83,7 @@ namespace ConsoleApp3
             {
                 val = que.Remove();
 
-                test = que;
+                test = que.Copy(que);
                 while (!test.IsEmpty())
                 {
                     val1 = test.Remove();
@@ -409,6 +409,22 @@ namespace ConsoleApp3
             }
         }
 
+        public Queue<T> Copy(Queue<T> que)
+        {
+            Queue<T> tempque1 = new Queue<T>();
+            Queue<T> tempque2 = new Queue<T>();
+            while(!que.IsEmpty())
+            {
+                tempque1.Insert(que.Head());
+                tempque2.Insert(que.Remove());
+            }
+            while (!tempque1.IsEmpty())
+            {
+                que.Insert(tempque1.Remove());
+            }
+            return tempque2;
+        }
+
         public T Remove() // tail = 1->2->head = 3
         {
             T temp;
@@ -566,5 +582,3 @@ namespace ConsoleApp3
         }
     }
 }
-
-
