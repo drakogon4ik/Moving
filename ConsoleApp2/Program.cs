@@ -1,5 +1,6 @@
 using System;
 using System.CodeDom.Compiler;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.OleDb;
 using System.Linq;
@@ -15,26 +16,100 @@ namespace ConsoleApp3
     {
         static void Main(string[] args)
         {
-            Queue<int> abc = new Queue<int>();
+            int num = 443;
+            int num1 = 8541;
+            int num2 = 77;
+            int num3 = 171;
+            Queue<int> que = ToQueue(num);
+            Console.WriteLine(que);
+            Queue<int>[] arr_ques = new Queue<int>[4];
+            arr_ques[0] = ToQueue(num);
+            arr_ques[1] = ToQueue(num1);
+            arr_ques[2] = ToQueue(num2);
+            arr_ques[3] = ToQueue(num3);
 
-
-            abc.Insert(1);
-            abc.Insert(2);
-            abc.Insert(3);
-            abc.Insert(0);
-            abc.Insert(1);
-            abc.Insert(3);
-            abc.Insert(3);
-            abc.Insert(3);
-            abc.Insert(3);
-            abc.Insert(2);
-            //Queue<int> ab = new Queue<int>(abc);
-            //Console.WriteLine(ab);
-            Console.WriteLine(abc);
-
-            Console.WriteLine(QueCouples(abc));
+            Console.WriteLine(que);
+            Console.WriteLine(ToNumber(que));
+            Console.WriteLine(GetMaxNumber(arr_ques));
         }
 
+        static public StackNode<int> ToStack(int number)
+        {
+            StackNode<int> stack = new StackNode<int>();
+            int len = number.ToString().Length;
+            for (int i = 0; i < len; i++)
+            {
+                stack.Push(number % 10);
+                number /= 10;
+            }
+            return stack;
+        }
+
+        static public int ToNumber(StackNode<int> stack)
+        {
+            int num = 0;
+            while (!stack.IsEmpty())
+                num = num * 10 + stack.Pop();
+
+            return num;
+        }
+
+
+        static public int GetMaxNumber(StackNode<int>[] stack)
+        {
+            int max = 0;
+            for (int i = 0; i < stack.Length; i++)
+            {
+                int n = ToNumber(stack[i]);
+                if (n > max)
+                    max = n;
+            }
+            return max;
+        }
+
+
+        static public Queue<int> ToQueue(int number)
+        {
+            Queue<int> que = new Queue<int>();
+            int len = number.ToString().Length;
+            for (int i = 0; i < len; i++)
+            {
+                que.Insert(number % 10);
+                number /= 10;
+            }
+            return que;
+        }
+
+
+        static public int ToNumber(Queue<int> que)
+        {
+            int num = 0;
+            int i = 0;
+            while (!que.IsEmpty())
+            {
+                int temp = que.Remove();
+                for(int j = 0; j<i; j++)
+                {
+                    temp *= 10;
+                }
+                num += temp;
+                i++;
+            }
+            return num;
+        }
+
+
+        static public int GetMaxNumber(Queue<int>[] ques)
+        {
+            int max = 0;
+            for (int i = 0; i < ques.Length; i++)
+            {
+                int n = ToNumber(ques[i]);
+                if (n > max)
+                    max = n;
+            }
+            return max;
+        }
 
 
         static LongNumber LongNumSum(LongNumber n1, LongNumber n2)
@@ -75,49 +150,37 @@ namespace ConsoleApp3
         }
 
 
-        static public Queue<int> QueCouples(Queue<int> que)
+        static public Queue<int> QueCouples(Queue<int> que) //function doesnt work sue to inheritance
         {
-            int n;
+            bool flag = false;
             int val;
             int val1;
-            bool flag = true;
-            Queue<int> test = new Queue<int>();
+            Queue<int> test = que;
             Queue<int> result = new Queue<int>();
-            Queue<int> bad_result = new Queue<int>();
             while (!que.IsEmpty())
             {
-                n = 0;
                 val = que.Remove();
-                if (!bad_result.IsEmpty())
+
+                test = que.Copy(que);
+                while (!test.IsEmpty())
                 {
-                    Queue<int> temp = bad_result.Copy(bad_result);
-                    while (!temp.IsEmpty())
-                    {
-                        int num = temp.Remove();
-                        if (val == num)
-                            flag = false;
-                    }
+                    val1 = test.Remove();
+                    if ((val1 == val) && (flag))
+                        break;
+                    else if (val1 == val)
+                        flag = true;
                 }
                 if (flag)
                 {
-                    test = que.Copy(que);
-                    while (!test.IsEmpty())
-                    {
-                        val1 = test.Remove();
-                        if (val1 == val)
-                            n++;
-                    }
-                    if (n == 1)
-                        result.Insert(val);
-                    else
-                        bad_result.Insert(val);
+                    result.Insert(val);
                 }
+                flag = false;
             }
             return result;
         }
 
 
-        static public Queue<int> QueCouplesNode(Queue<int> que) //function works with node
+        static public Queue<int> QueCouplesNode(Queue<int> que) //function works
         {
             int val;
             int val1;
@@ -485,17 +548,14 @@ namespace ConsoleApp3
 
         public override string ToString()
         {
-            string s = "";
-            string res = "[";
+            string s = "[";
             Node<T> temp = tail;
             while (temp != null)
             {
                 s += temp.GetInfo() + " ";
                 temp = temp.GetNext();
             }
-            for (int i = s.Length - 1; i >= 0; i--)
-                res += s[i];
-            return res + ']';
+            return s + ']';
         }
     }
     class StackNode<T> // LIFO
@@ -528,6 +588,16 @@ namespace ConsoleApp3
         public T Top() //O(1)
         {
             return node.GetInfo();
+        }
+
+        public StackNode<T> Reverse(StackNode<T> number) //O(1)
+        {
+            StackNode<T> stack = new StackNode<T>();
+
+            while (!number.IsEmpty())
+                stack.Push(number.Pop());
+            return stack;
+
         }
 
         public override string ToString() //O(n)
